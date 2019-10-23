@@ -15,7 +15,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('opim-api/', entryRouter);
+app.use('/opim-api', entryRouter);
 
 app.use((req, res, next) => {
   const error = new Error('NOT FOUND');
