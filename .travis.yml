@@ -1,0 +1,19 @@
+language: node_js
+
+node_js: "10.15.1"
+
+install: npm install
+
+services:
+  - postgresql
+
+scripts: npm test
+
+before_script :
+  - psql -c 'create database opim_test;' -U postgres
+
+after_script :
+  - npm install coveralls && npm run coverage
+
+notifications:
+  email: false
