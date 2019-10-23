@@ -2,8 +2,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/Meyllos/opim-api/badge.svg?branch=develop)](https://coveralls.io/github/Meyllos/opim-api?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/9fabecc3f5dd5db86c53/maintainability)](https://codeclimate.com/github/Meyllos/opim-api/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/9fabecc3f5dd5db86c53/test_coverage)](https://codeclimate.com/github/Meyllos/opim-api/test_coverage)
-# opim-api
-
+# OPIM - API
+This app allows you to access, manage and share all your valuable information safely, anytime, anywhere.
 
 ## Getting Started 
 To get the project up and running on your local machine, please follow these instructions.
@@ -29,7 +29,7 @@ Download the intaller from the [official Node.js website](http://nodejs.org/)
 
 ### Clone the project from github
 
-$ git clone https://github.com/alfredruhara/property-pro-lite
+$ git clone https://github.com/Meyllos/opim-api.git
 
 ### Install the required dependencies found in package.json
 
