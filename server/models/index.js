@@ -3,4 +3,18 @@ import DB_URL from '../config';
 
 const pool = new Pool({ connectionString: DB_URL });
 
-export default pool;
+const dropIntest = {
+	dropUserTable: async (sql) => {
+		const res = await pool.query(sql);
+		return res;
+	},
+
+	truncateTable: async sql => pool.query(sql)
+};
+  
+  
+const creator = {
+	createTable: async query => pool.query(query)
+};
+
+export { pool, creator, dropIntest };
