@@ -25,6 +25,13 @@ class UserTable {
       return { error: { status: INTERNAL_SERVER_ERROR_CODE, message: e.message, err: e } };
     }
   }
+  /**
+   * select user from database
+   * @param {array} values 
+   */
+  static async match(values) {
+    return db.query('SELECT * FROM users WHERE email=$1', values);
+  }
 }
 
 export default UserTable;
