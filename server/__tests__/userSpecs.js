@@ -1,11 +1,11 @@
 import app from '../../app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { signupCredentials, explicitCredentials, dump } from '../logs/user';
+import { signupCredentials, explicitCredentials, dump, signinCredentials, FakeSigninCredentials } from '../logs/user';
 import route from '../logs/routes';
 import { drop } from '../models/index';
 import { JSON_TYPE } from '../logs/protocols';
-import { CREATED_CODE, RESOURCE_CONFLICT } from '../constantes/statusCodes';
+import { SUCCESS_CODE, CREATED_CODE, RESOURCE_CONFLICT ,UNAUTHORIZED_CODE } from '../constantes/statusCodes';
 
 chai.use(chaiHttp);
 const { expect, request } = chai;
@@ -64,4 +64,47 @@ describe('Test case: User authentification', () => {
         });
 
     });
+
+    describe('Base case: logs in ', () => {
+
+                
+        it('Should recognize unprocessable entities if required fields are not well formed', (done) => {
+            request(app)
+            .post(route.signin)
+            .send(dump)
+            .end((err, res) => {
+                expect(res).to.have.status(422);
+                done();
+            });
+        });
+
+        it('Should sign in the user with correct credentials', (done) => {
+            request(app)
+            .post(route.signin)
+            .send(signinCredentials)
+            .set('Accept', JSON_TYPE)
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(SUCCESS_CODE);
+                expect(res.body).to.be.an('object');
+                expect(res.body).to.have.property('status');
+                expect(res.type).to.be.equal(JSON_TYPE);
+                done();
+            });
+        });
+
+        it('Should recognize unmatch user credentials - faker user', (done) => {
+            request(app)
+                .post(route.signin)
+                .send(FakeSigninCredentials)
+                .end((err, res) => {
+                    expect(res.statusCode).to.be.equal(UNAUTHORIZED_CODE);
+                    expect(res.body).to.have.property('status').to.be.equal(UNAUTHORIZED_CODE);
+                    done();
+                });
+        });
+
+
+    });
+
+
 });

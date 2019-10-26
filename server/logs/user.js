@@ -15,3 +15,13 @@ export const explicitCredentials = {
 export const dump = {
   dump: 'dump@data'
 };
+
+export const signinCredentials = {
+  email: 'chadasoft@gmail.com',
+  password: '123456'
+};
+
+export const FakeSigninCredentials = {
+  email: 'zero@gmail.com',
+  password: '123456'
+};
