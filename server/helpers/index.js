@@ -35,10 +35,10 @@ class Helper {
    */
   static joiError(res, error) {
     const body = {
-      status: BAD_REQUEST_CODE,
+      status: 422,
       error: error.details[0].message.replace(/[^a-zA-Z0-9 ]/g, '')
     };
-    return res.status(BAD_REQUEST_CODE).json(body);
+    return res.status(422).json(body);
   }
 
   /**

@@ -1,20 +1,15 @@
 import { Pool } from 'pg';
 import DB_URL from '../config';
 
-const pool = new Pool({ connectionString: DB_URL });
+const db = new Pool({ connectionString: DB_URL });
 
-const dropIntest = {
-	dropUserTable: async (sql) => {
-		const res = await pool.query(sql);
-		return res;
-	},
-
-	truncateTable: async sql => pool.query(sql)
+const drop = {
+	table: async (query) => { return  await db.query(query); },
+	truncate: async query => db.query(query)
 };
   
-  
-const creator = {
-	createTable: async query => pool.query(query)
+const create = {
+	table: async query => db.query(query)
 };
 
-export { pool, creator, dropIntest };
+export { db, create, drop };

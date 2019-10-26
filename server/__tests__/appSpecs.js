@@ -3,21 +3,24 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 
 chai.use(chaiHttp);
+const { expect, request } = chai;
 
-describe('Core Tests', () => {
+describe('Test case: Core App', () => {
   
-  describe('Incoming requests', () => {
+  describe('Base case: Incoming requests', () => {
 
-    it('should handling bad requests and internal errors', (done) => {
-      chai.request(app)
+    it('should handle bad requests and internal errors - define as 404 ', (done) => {
+      request(app)
       .get('/opim-ap')
       .end((err, res) => {
-        chai.expect(res.status).to.be.equal(403);
-        chai.expect(res.body.error.message).to.be.equal('NOT FOUND');
+        expect(res.status).to.be.equal(404);
+        expect(res.body.error.message).to.be.equal('NOT FOUND');
         done();
       });
 
     });
+
+    
 
   });
 

@@ -1,5 +1,6 @@
-import { pool, creator } from './index';
-import { createUsersTable } from '../config/ddl';
+import { db, create } from './index';
+import { users } from '../config/ddl';
+import { RESOURCE_CONFLICT, INTERNAL_SERVER_ERROR_CODE } from '../constantes/statusCodes';
 
 class UserTable {
   /**
@@ -8,20 +9,20 @@ class UserTable {
    */
   static async create(values){
     try {
-      await creator.createTable(createUsersTable);   
+      await create.table(users);   
       
-      const exist = await pool.query(`SELECT * FROM users WHERE email = $1 `, [values[0]]);
+      const exist = await db.query(`SELECT * FROM users WHERE email = $1 `, [values[0]]);
 
       if (exist.rowCount > 0) {
-        return { error: { status: 409, message: 'Email already exists' } };
+        return { error: { status: RESOURCE_CONFLICT, message: 'Email already exists' } };
       }
 
-      const result = await pool.query(`INSERT INTO users (email,password) VALUES($1, $2) RETURNING id, email`, values);
+      const result = await db.query(`INSERT INTO users (email,password) VALUES($1, $2) RETURNING id, email`, values);
 
       return result;
 
     } catch (e) {
-      return { error: { status: 500, message: e.message, err: e } };
+      return { error: { status: INTERNAL_SERVER_ERROR_CODE, message: e.message, err: e } };
     }
   }
 }
