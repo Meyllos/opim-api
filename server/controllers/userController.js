@@ -2,9 +2,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import UserTable from "../models/userModel";
-import { SUCCESS_CODE, CREATED_CODE, BAD_REQUEST_CODE , UNAUTHORIZED_CODE} from '../constantes/statusCodes';
+import { SUCCESS_CODE, CREATED_CODE, BAD_REQUEST_CODE , UNAUTHORIZED_CODE, INTERNAL_SERVER_ERROR_CODE} from '../constantes/statusCodes';
 import Helper from '../helpers/index';
+import HelperEmail from '../helpers/email';
 import omit from 'object.omit';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -74,20 +76,22 @@ class UserController {
 
     return bcrypt.compare(req.body.password, result.rows[0].password, (err, ok) => {
       if (err) { 
-        return Helper.error(response, UNAUTHORIZED_CODE, 'Something went wrong'); 
+        return Helper.error(res, UNAUTHORIZED_CODE, 'Something went wrong'); 
       }
       if (ok) {
+        
         const { id, email, verified } = result.rows[0];
         const token = jwt.sign({ id, email}, process.env.JWT_KEY, { expiresIn: '24h' });
        
         const log = Object.assign({token, id, email});
 
-        let message ; 
+        let message = 'logged in'; 
 
         if (!verified) {
-          message = 'An email have been sent to  your address with a verification code and activation link'
-        }else{
-          message = 'logged in'
+
+          HelperEmail.sendEmail(email, token);
+          message = 'An email with an activation link has been sent to your email address';
+          
         }
 
         return Helper.ok(res, SUCCESS_CODE, log, message);
