@@ -57,9 +57,32 @@ Testing the code style with eslint
 
 ### Deployment
 
-The application server has been hosted on Heroku: 
-   - https://opim.herokuapp.com
-   
+The application server has been hosted on Heroku with the first phase endpoints of the application (Authentifications) : 
+
+#### Authentifications
+
+Method|End point | Public |Action
+-----------|----------|--------------|------
+POST | https://opim.herokuapp.com/opim-api/v1/auth/signup | True | Sign up a user
+POST | https://opim.herokuapp.com/opim-api/v1/auth/signin | True | Sign in a user
+PATCH | https://opim.herokuapp.com/opim-api/v1/auth/email-verification/?token= | True  | Account activation
+
+#### Sign up body - model
+``{
+ 'email' : 'example@gmail.com',
+ 'password': '123456',
+ 'passwordConfirmation': '123456'
+}``
+
+#### Sign in body - model
+``{
+ 'email' : 'example@gmail.com',
+ 'password': '123456'
+}``
+
+#### Email verificationa - no body required
+
+
 The application template is hosted on github pages
 <a href="https://meyllos.github.io/opim-frontend/UI/">https://meyllos.github.io/opim-frontend/UI/</a> <br/>
 
