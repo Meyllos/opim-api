@@ -9,4 +9,7 @@ router.route('/signup')
 
 router.route('/signin')
   .post(UserValidations.signin, UserController.signin);
+
+router.route('/email-verification')
+  .patch(UserController.emailVerification);
 export default router;

@@ -18,7 +18,7 @@ class HelperEmail {
       to: email,
       subject: 'Opim- account verification',
       html: `
-        <p> User this link to verify your account : <a href='https://opim.herokuapp.com/opim-api/v1/account-validation?tk=${token}'> Activate my account  </a> </p>
+        <p> User this link to verify your account : <a href='https://opim.herokuapp.com/opim-api/v1/auth/email-verification/?token=${token}'> Activate my account  </a> </p>
       `
     };
 

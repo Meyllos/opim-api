@@ -5,8 +5,9 @@ import UserTable from "../models/userModel";
 import { SUCCESS_CODE, CREATED_CODE, BAD_REQUEST_CODE , UNAUTHORIZED_CODE, INTERNAL_SERVER_ERROR_CODE} from '../constantes/statusCodes';
 import Helper from '../helpers/index';
 import HelperEmail from '../helpers/email';
+import HelperJwt from '../helpers/jwt';
 import omit from 'object.omit';
-import nodemailer from 'nodemailer';
+import URL from 'url';
 
 dotenv.config();
 
@@ -45,11 +46,13 @@ class UserController {
         expiresIn: '24h'
       });
 
+      HelperEmail.sendEmail(email, token);
+
       req.body = Object.assign({ token, id , email }, omit(req.body, 'password'));
 
       req.body.passwordConfirmation = undefined;
 
-      Helper.ok(res, CREATED_CODE, req.body, 'Account Successfully Created');
+      Helper.ok(res, CREATED_CODE, req.body, 'Account Successfully created ! An email with an activation link has been sent to your email address');
       
     }catch(e){
       Helper.error(res, BAD_REQUEST_CODE, 'Bad Request');
@@ -91,13 +94,37 @@ class UserController {
 
           HelperEmail.sendEmail(email, token);
           message = 'An email with an activation link has been sent to your email address';
-          
+
         }
 
         return Helper.ok(res, SUCCESS_CODE, log, message);
       }
       return Helper.error(res, UNAUTHORIZED_CODE, 'Email or Password Incorrect');
     });
+
+  }
+  /** APPLIED WITH LOW LEVEL SECURITY INTEGRATION  - review */
+  static async emailVerification(req, res){
+    const url = URL.parse(req.url, true).query;
+
+    const vals =  HelperJwt.extractValsFromJwtToken(url.token);
+    
+    let resultSet = [];
+
+    await vals.then((user)=> { resultSet = user; })
+              .catch((err) => { 
+                return Helper.error(res, UNAUTHORIZED_CODE, 'Something went wrong'); 
+              });
+
+    const result =  await UserTable.update([true, resultSet.id]);
+
+    if (result.error) {
+      Helper.error(res, result.error.status, result.error.message);
+      return;
+    }
+
+ 
+    return Helper.ok(res, SUCCESS_CODE, {} , 'Account activated');
 
   }
   
