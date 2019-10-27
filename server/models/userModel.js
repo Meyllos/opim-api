@@ -32,6 +32,10 @@ class UserTable {
   static async match(values) {
     return db.query('SELECT * FROM users WHERE email=$1', values);
   }
+
+  static async update(values){
+    return db.query('UPDATE users SET verified=$1 WHERE id=$2', values);
+  }
 }
 
 export default UserTable;

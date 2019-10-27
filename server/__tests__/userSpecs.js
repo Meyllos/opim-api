@@ -1,6 +1,7 @@
 import app from '../../app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import jwt from "jsonwebtoken";
 import { signupCredentials, explicitCredentials, dump, signinCredentials, FakeSigninCredentials } from '../logs/user';
 import route from '../logs/routes';
 import { drop } from '../models/index';
@@ -9,6 +10,8 @@ import { SUCCESS_CODE, CREATED_CODE, RESOURCE_CONFLICT ,UNAUTHORIZED_CODE } from
 
 chai.use(chaiHttp);
 const { expect, request } = chai;
+
+export const userToken = jwt.sign({ email: signupCredentials.email, id: 1 }, process.env.JWT_KEY, { expiresIn: '10min' });
 
 before(()=>{
     drop.table('DROP TABLE IF EXISTS users');
@@ -94,16 +97,31 @@ describe('Test case: User authentification', () => {
 
         it('Should recognize unmatch user credentials - faker user', (done) => {
             request(app)
-                .post(route.signin)
-                .send(FakeSigninCredentials)
-                .end((err, res) => {
-                    expect(res.statusCode).to.be.equal(UNAUTHORIZED_CODE);
-                    expect(res.body).to.have.property('status').to.be.equal(UNAUTHORIZED_CODE);
-                    done();
-                });
+            .post(route.signin)
+            .send(FakeSigninCredentials)
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(UNAUTHORIZED_CODE);
+                expect(res.body).to.have.property('status').to.be.equal(UNAUTHORIZED_CODE);
+                done();
+            });
         });
 
 
+    });
+
+    describe('Base case: Account activation', ()=> {
+        it('Shoul activate an account based on the verified entity state to be set on true state', (done) => {
+            request(app)
+            .patch(route.emailverification+userToken)
+            .set('Accept', JSON_TYPE)
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(SUCCESS_CODE);
+                expect(res.body).to.be.an('object');
+                expect(res.body).to.have.property('status');
+                expect(res.type).to.be.equal(JSON_TYPE);
+                done();
+            });
+        });
     });
 
 

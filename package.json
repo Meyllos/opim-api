@@ -34,9 +34,11 @@
     "express": "^4.17.1",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.3.1",
     "nyc": "^14.1.1",
     "object.omit": "^3.0.0",
-    "pg": "^7.12.1"
+    "pg": "^7.12.1",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
